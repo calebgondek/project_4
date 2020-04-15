@@ -20,15 +20,12 @@ bool sort_order_number(const ORDER &o1, const ORDER &o2) {
 	return o1.order_number < o2.order_number;
 }
 
-File_IO::File_IO(std::string filename):filename(filename), is_initialized(false)
-{
+File_IO::File_IO(std::string filename) :
+		filename(filename), is_initialized(false) {
 }
 
-
-File_IO::~File_IO()
-{
+File_IO::~File_IO() {
 }
-
 
 int File_IO::processData(std::ifstream &file) {
 	std::string line;
@@ -105,8 +102,7 @@ int File_IO::getNext(ORDER &anOrder) {
 	//return the next one
 	anOrder = myOrders[0];
 	myOrders.erase(myOrders.begin());
-	
+
 	return SUCCESS;
 }
-
 

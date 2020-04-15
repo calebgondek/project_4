@@ -1,11 +1,9 @@
 #include "../includes/box.h"
 
-Box::Box()
-{
+Box::Box() {
 }
 
-Box::~Box()
-{
+Box::~Box() {
 }
 
 void Box::clear() {
