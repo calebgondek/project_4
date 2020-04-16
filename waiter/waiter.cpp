@@ -52,6 +52,8 @@ void Waiter::beWaiter() {
 		}
 
 	} while (check == SUCCESS);
+
 	b_WaiterIsFinished = true;
+	cv_order_inQ.notify_all();
 }
 

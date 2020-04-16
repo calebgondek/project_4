@@ -6,8 +6,6 @@
 #include "../includes/baker.h"
 using namespace std;
 
-mutex m; //We probably need to use the mutexes in externs
-
 /*
  * ID is just a number used to identify this particular baker
  * (used with PRINT statements)
@@ -25,30 +23,20 @@ Baker::~Baker() {
  * 1 with 12 donuts, 1 with 1 donut
  */
 void Baker::bake_and_box(ORDER &anOrder) {
-/*	int numDonuts = anOrder.number_donuts;
+
+	int numDonuts = anOrder.number_donuts;
 	while (numDonuts > 0) {
 		Box tmp;
-		while (tmp.size() <= DOZEN) {
+		while (tmp.size() <= DOZEN && numDonuts > 0) {
 			DONUT tmp2;
 			if (!tmp.addDonut(tmp2)) {
 				break;
 			}
+			numDonuts--;
 		}
 		anOrder.boxes.push_back(tmp);
-
-	}*/
-	int doughtnuts_left = anOrder.number_donuts;
-	Box doughnut_box;
-
-	for(int i = 0; i < ceil(doughtnuts_left/12.0); ++i) {
-		doughnut_box.clear();
-		for (int j = 0; j < doughtnuts_left && j <= DOZEN; ++j) {
-			DONUT doughnut;
-			doughnut_box.addDonut(doughnut);
-		}
-		doughtnuts_left -= 12;
-		anOrder.boxes.push_back(doughnut_box);
 	}
+	cout << id << " done baking " << endl;
 }
 
 /*
@@ -64,16 +52,21 @@ void Baker::bake_and_box(ORDER &anOrder) {
  * hint: wait Tfor something to be in order_in_Q or b_WaiterIsFinished == true
  */
 void Baker::beBaker() {
-	{
-		std::unique_lock<mutex> lck(mutex_order_inQ);
-		cv_order_inQ.wait(lck);
-	}
-	while (!b_WaiterIsFinished || order_in_Q.size() > 0) {
-		std::unique_lock<mutex> lock(m);
-		ORDER tmp = order_in_Q.front();
-		bake_and_box(tmp);
-		order_in_Q.pop();
-		order_out_Vector.push_back(tmp);
+	while (!b_WaiterIsFinished || order_in_Q.size() != 0) {
+		while ((order_in_Q.size() == 0) && !b_WaiterIsFinished) {
+			std::unique_lock<mutex> lck(mutex_order_inQ); // Make the threads hang out until there is something for them to do
+			cv_order_inQ.wait(lck);
+		}
 
+		if (order_in_Q.size() > 0) {	// This check to
+			ORDER tmp;					//
+			tmp = order_in_Q.front();	//
+			order_in_Q.pop();			// here are critical sections
+
+			cout << order_in_Q.size() << endl;
+
+			bake_and_box(tmp);
+			order_out_Vector.push_back(tmp);
+		}
 	}
 }
