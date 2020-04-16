@@ -59,8 +59,8 @@ void Baker::beBaker() {
 		}
 
 		if (order_in_Q.size() > 0) {	// This check to
-			ORDER tmp;					//
-			tmp = order_in_Q.front();	//
+			ORDER tmp;					// ...
+			tmp = order_in_Q.front();	// ...
 			order_in_Q.pop();			// here are critical sections
 
 			cout << order_in_Q.size() << endl;
