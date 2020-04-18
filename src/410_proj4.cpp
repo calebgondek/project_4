@@ -98,6 +98,15 @@ int main() {
 	t2.join();
 	t3.join();
 
+	thread t_waiter2(doWaiter,0,"in1.txt");
+	thread t4 (doBaker,1);
+	thread t5 (doBaker,2);
+	thread t6 (doBaker,3);
+
+	t_waiter2.join();
+	t4.join();
+	t5.join();
+	t6.join();
 
 //	doWaiter(1,"in3.txt");
 //	doBaker(2);

@@ -36,6 +36,7 @@ int Waiter::getNext(ORDER &anOrder) {
  * it is done using b_WaiterIsFinished
  */
 void Waiter::beWaiter() {
+	b_WaiterIsFinished = false;
 	int check;
 	do {
 		ORDER anOrder;
@@ -54,6 +55,7 @@ void Waiter::beWaiter() {
 	} while (check == SUCCESS);
 
 	b_WaiterIsFinished = true;
+	cout << "waiter is done" << endl;
 	cv_order_inQ.notify_all();
 }
 
