@@ -1,7 +1,7 @@
 #include "../includes/logger.h"
 using namespace std;
 
-//TODO: This class needs to not step on itself when multithreading
+mutex m;
 
 Logger::Logger(std::string filename) {
 	this->filename = filename;
@@ -16,6 +16,7 @@ Logger::~Logger() {
  * delete the contents of the log file
  */
 void Logger::clearlogfile() {
+	lock_guard<mutex> lock(m);
 	myFile.open(filename, std::fstream::trunc);
 
 	//close file
@@ -27,6 +28,7 @@ void Logger::clearlogfile() {
  * open, append data to logfile, then close
  */
 void Logger::log(std::string data) {
+	lock_guard<mutex> lock(m);
 	myFile.open(filename, std::fstream::app);
 	if (!myFile.is_open())
 		return;

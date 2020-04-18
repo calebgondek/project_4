@@ -55,7 +55,6 @@ void Waiter::beWaiter() {
 	} while (check == SUCCESS);
 
 	b_WaiterIsFinished = true;
-	cout << "waiter is done" << endl;
 	cv_order_inQ.notify_all();
 }
 

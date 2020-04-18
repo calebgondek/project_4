@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <chrono>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
@@ -93,10 +94,12 @@ int main() {
 	thread t2 (doBaker,2);
 	thread t3 (doBaker,3);
 
-	t_waiter.join();
 	t1.join();
 	t2.join();
 	t3.join();
+	t_waiter.join();
+
+//	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 	thread t_waiter2(doWaiter,0,"in1.txt");
 	thread t4 (doBaker,1);

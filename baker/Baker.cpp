@@ -1,10 +1,10 @@
 #include <mutex>
 #include <thread>
 #include <condition_variable>
-
 #include "../includes/externs.h"
 #include "../includes/baker.h"
 using namespace std;
+
 
 /*
  * ID is just a number used to identify this particular baker
@@ -37,7 +37,7 @@ void Baker::bake_and_box(ORDER &anOrder) {
 		}
 		anOrder.boxes.push_back(tmp);
 	}
-	cout << id << " done" << endl;
+	cout << id << " done baking" << endl;
 }
 
 /*
@@ -54,18 +54,15 @@ void Baker::bake_and_box(ORDER &anOrder) {
  */
 void Baker::beBaker() {
 	while (!b_WaiterIsFinished || order_in_Q.size() != 0) {
-		std::unique_lock<mutex> lck(mutex_order_inQ); // Make the threads hang out until there is something for them to do
-		cv_order_inQ.wait(lck, [](){
-				return (b_WaiterIsFinished || order_in_Q.size() > 0);
+
+		std::unique_lock<mutex> lck(mutex_order_inQ);
+		cv_order_inQ.wait(lck, [](){ // Make the threads hang out until there is something for them to do
+				return (b_WaiterIsFinished || order_in_Q.size() > 0); // When this function returns true, the function is allowed to wake up
 		});
 
-
-
-		if (order_in_Q.size() > 0) {		// This check to
-			ORDER tmp = order_in_Q.front();	// ...
-			order_in_Q.pop();				// here are critical sections
-			cout << id << " succeeded" << endl;
-
+		if (order_in_Q.size() > 0) {
+			ORDER tmp = order_in_Q.front();
+			order_in_Q.pop();
 			bake_and_box(tmp);
 			order_out_Vector.push_back(tmp);
 		}
